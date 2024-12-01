@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    {
+      "name": "itk",
+      "features": [
+        "vtk"
+      ]
+    },
+    {
+      "name": "vtk"
+    }
+  ]
+}
