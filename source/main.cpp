@@ -18,19 +18,18 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 #include <vtkImagePlaneWidget.h>
-
+#include <vtkImageViewer2.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkCellPicker.h>
+#include <vtkInteractorStyleImage.h>
+
 
 
 int main (int argc, char *argv[]) {
 
   MeIm::ArgParser parser;
-  std::cout << "before parse \n";
   auto options = parser.Parse(argc, argv);
 
-  std::cout << "after parse \n";
-  std::cout << "file is at " << options.fileName << "\n";
 
   auto readerFac = MeIm::ReaderFactory::CreateReader(options.fileType);
 
@@ -41,9 +40,12 @@ int main (int argc, char *argv[]) {
   // Create the renderer, render window and interactor
   vtkNew<vtkNamedColors> colors;
   vtkNew<vtkRenderer> renderer;
+
+  // renderer for views
   vtkNew<vtkRenderer> axialRenderer;
-   vtkNew<vtkRenderer> coronalRenderer;
+  vtkNew<vtkRenderer> coronalRenderer;
   vtkNew<vtkRenderer> sagittalRenderer;
+
   vtkNew<vtkRenderWindow> renWin;
 
 
@@ -62,16 +64,11 @@ int main (int argc, char *argv[]) {
   vtkNew<vtkRenderWindowInteractor> iren;
 
 
-      // Create renderers for axial, coronal, and sagittal views
   iren->SetRenderWindow(renWin);
   iren->SetDesiredUpdateRate(options.frameRate / (1 + options.clip));
 
   iren->GetInteractorStyle()->SetDefaultRenderer(renderer);
-
-
-
-
-
+  
   // Verify that we actually have a volume
   int dim[3];
   input->GetDimensions(dim);
@@ -270,51 +267,34 @@ int main (int argc, char *argv[]) {
   }
 
 
-    // Configure the ImagePlaneWidgets
-    vtkSmartPointer<vtkImagePlaneWidget> axialWidget = vtkSmartPointer<vtkImagePlaneWidget>::New();
-    axialWidget->SetInputData(input);
-    axialWidget->SetPlaneOrientationToZAxes();
-    axialWidget->SetInteractor(iren);
-    axialWidget->SetDefaultRenderer(axialRenderer);
-    axialWidget->On();
-    axialWidget->GetPlaneProperty()->SetColor(colors->GetColor3d("Red").GetData());
+   vtkNew<vtkImageViewer2> axialViewer;
+  axialViewer->SetInputData(input);
+  axialViewer->SetRenderWindow(renWin);
+  axialViewer->SetRenderer(axialRenderer);
+  axialViewer->SetSliceOrientationToXY();
+  axialViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice
 
-    vtkSmartPointer<vtkImagePlaneWidget> coronalWidget = vtkSmartPointer<vtkImagePlaneWidget>::New();
-    coronalWidget->SetInputData(input);
-    coronalWidget->SetPlaneOrientationToYAxes();
-    coronalWidget->SetInteractor(iren);
-    coronalWidget->SetDefaultRenderer(coronalRenderer);
-    coronalWidget->On();
-    coronalWidget->GetPlaneProperty()->SetColor(colors->GetColor3d("Green").GetData());
+  vtkNew<vtkImageViewer2> coronalViewer;
+  coronalViewer->SetInputData(input);
+  coronalViewer->SetRenderWindow(renWin);
+  coronalViewer->SetRenderer(coronalRenderer);
+  coronalViewer->SetSliceOrientationToXZ();
+  coronalViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice
 
-    vtkSmartPointer<vtkImagePlaneWidget> sagittalWidget = vtkSmartPointer<vtkImagePlaneWidget>::New();
-    sagittalWidget->SetInputData(input);
-    sagittalWidget->SetPlaneOrientationToXAxes();
-    sagittalWidget->SetInteractor(iren);
-    sagittalWidget->SetDefaultRenderer(sagittalRenderer);
-    sagittalWidget->On();
-    sagittalWidget->GetPlaneProperty()->SetColor(colors->GetColor3d("Blue").GetData());
+  vtkNew<vtkImageViewer2> sagittalViewer;
+  sagittalViewer->SetInputData(input);
+  sagittalViewer->SetRenderWindow(renWin);
+  sagittalViewer->SetRenderer(sagittalRenderer);
+  sagittalViewer->SetSliceOrientationToYZ();
+  sagittalViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice     //Set up viewports for the three renderers
 
 
 
 
-
-
-  auto camerasagittal = sagittalRenderer->GetActiveCamera();
-  camerasagittal->SetViewUp(0,0.0,1.0);
-  camerasagittal->SetPosition(1,0,0);
-  sagittalRenderer->ResetCamera();
-
-  auto cameraCoronal = coronalRenderer->GetActiveCamera();
-  cameraCoronal->SetViewUp(0.0,0.0,1);
-  cameraCoronal->SetPosition(0,1,0);
-
-  coronalRenderer->ResetCamera();
-     //Set up viewports for the three renderers
-renderer->SetViewport(0.0, 0.0, 0.7, 1.0);  // Main renderer (full left)
-axialRenderer->SetViewport(0.7, 0.66, 1.0, 1.0);  // Axial view (top-right)
-coronalRenderer->SetViewport(0.7, 0.33, 1.0, 0.66); // Coronal view (middle-right)
-sagittalRenderer->SetViewport(0.7, 0.0, 1.0, 0.33); // Sagittal view (bottom-right)
+  renderer->SetViewport(0.0, 0.0, 0.7, 1.0);  // Main renderer (full left)
+  axialRenderer->SetViewport(0.7, 0.66, 1.0, 1.0);  // Axial view (top-right)
+  coronalRenderer->SetViewport(0.7, 0.33, 1.0, 0.66); // Coronal view (middle-right)
+  sagittalRenderer->SetViewport(0.7, 0.0, 1.0, 0.33); // Sagittal view (bottom-right)
 
   // Set the default window size
   renWin->SetSize(1000, 1000);

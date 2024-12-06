@@ -14,6 +14,7 @@ find_package(VTK COMPONENTS
   IOImage
   IOXML
   ImagingCore
+  InteractionImage
   InteractionStyle
   InteractionWidgets
   FiltersSources
