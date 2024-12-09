@@ -33,6 +33,7 @@
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkViewport.h>
+#include <QTimer>
 
 // toca quitar esta linea antes de compilar
 #include "../../build/RenderImage_autogen/include_Release/ui_mainwindow.h"
@@ -148,26 +149,24 @@ MainWindow::MainWindow(QWidget *parent)
     property->SetScalarOpacityUnitDistance(0.8919);
 
 
-   vtkNew<vtkImageViewer2> axialViewer;
     axialViewer->SetInputData(input);
     axialViewer->SetRenderWindow(renderWindow);
     axialViewer->SetRenderer(axialRenderer);
     axialViewer->SetSliceOrientationToXY();
     axialViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice
 
-    vtkNew<vtkImageViewer2> coronalViewer;
     coronalViewer->SetInputData(input);
     coronalViewer->SetRenderWindow(renderWindow);
     coronalViewer->SetRenderer(coronalRenderer);
     coronalViewer->SetSliceOrientationToXZ();
-    coronalViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice
+    coronalViewer->SetSlice(coronalViewer->GetSliceMin()+1); // Set to middle slice
 
-    vtkNew<vtkImageViewer2> sagittalViewer;
     sagittalViewer->SetInputData(input);
     sagittalViewer->SetRenderWindow(renderWindow);
     sagittalViewer->SetRenderer(sagittalRenderer);
     sagittalViewer->SetSliceOrientationToYZ();
-    sagittalViewer->SetSlice(axialViewer->GetSliceMin()+1); // Set to middle slice     //Set up viewports for the three renderers
+    sagittalViewer->SetSlice(coronalViewer->GetSliceMin()+1); // Set to middle slice     //Set up viewports for the three renderers
+    std::cout << coronalViewer->GetSliceMax() << axialViewer->GetSliceMax() << sagittalViewer->GetSliceMax() << "\n";
 
     renderer->SetViewport(0.0, 0.0, 0.7, 1.0); 
     axialRenderer->SetViewport(0.7, 0.66, 1.0, 1.0);  // Axial view (top-right)
@@ -183,6 +182,18 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->openGLWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->Render();
 
+    debounceTimer = new QTimer(this);
+    debounceTimer->setSingleShot(true); // Only trigger once after the timeout
+    debounceTimer->setInterval(100); // 100 ms delay before rendering
+
+    this->ui->horizontalSlider->setRange(axialViewer->GetSliceMin(), axialViewer->GetSliceMax());
+    this->ui->horizontalSlider_2->setRange(coronalViewer->GetSliceMin(), coronalViewer->GetSliceMax());
+    this->ui->horizontalSlider_3->setRange(sagittalViewer->GetSliceMin(), sagittalViewer->GetSliceMax());
+
+    connect(this->ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedAxial);
+    connect(this->ui->horizontalSlider_2, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedCoronal);
+    connect(this->ui->horizontalSlider_3, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedSagittal);
+
 
     
 }
@@ -190,4 +201,32 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onSliderValueChangedAxial(int value)
+{
+  std::cout << "valor horizontal" << value << "\n";
+  axialViewer->SetSlice(value);
+  debounceTimer->start();
+
+}
+void MainWindow::onSliderValueChangedCoronal(int value)
+{
+  std::cout << "valor horizontal" << value << "\n";
+  coronalViewer->SetSlice(value);
+  debounceTimer->start();
+
+}
+void MainWindow::onSliderValueChangedSagittal(int value)
+{
+  std::cout << "valor horizontal" << value << "\n";
+  sagittalViewer->SetSlice(value);
+   coronalViewer->Render();
+}
+
+void MainWindow::onSliderTimeout() {
+    // Perform the rendering after debounce delay
+    axialViewer->Render();
+    coronalViewer->Render();
+    sagittalViewer->Render();
 }
