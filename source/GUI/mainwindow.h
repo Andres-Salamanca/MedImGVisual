@@ -6,6 +6,8 @@
 #include <vtkImageViewer2.h>
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,8 @@ private:
     vtkNew<vtkImageViewer2> axialViewer;
     vtkNew<vtkImageViewer2> coronalViewer;
     vtkNew<vtkImageViewer2> sagittalViewer;
+    vtkNew<vtkColorTransferFunction> colorFun;
+    vtkNew<vtkPiecewiseFunction> opacityFun;
     QTimer *debounceTimer;
     Ui::MainWindow *ui;
 

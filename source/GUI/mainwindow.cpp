@@ -125,8 +125,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   /// seleccionar solore y opacidad para diferenciar partes del cuerpo
     // Create our transfer function
-    vtkNew<vtkColorTransferFunction> colorFun;
-    vtkNew<vtkPiecewiseFunction> opacityFun;
+    /*vtkNew<vtkColorTransferFunction> colorFun;
+    vtkNew<vtkPiecewiseFunction> opacityFun;*/
     // Create the property and attach the transfer functions
     vtkNew<vtkVolumeProperty> property;
     property->SetIndependentComponents(true);
@@ -192,9 +192,13 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->openGLWidget->renderWindow()->AddRenderer(axialRenderer);
     this->ui->openGLWidget->renderWindow()->AddRenderer(coronalRenderer);
     this->ui->openGLWidget->renderWindow()->AddRenderer(sagittalRenderer);
-
     this->ui->openGLWidget->renderWindow()->AddRenderer(renderer);
+
+
     renderWindow->Render();
+
+    
+    // added timer for reducing rendering updates
 
     debounceTimer = new QTimer(this);
     debounceTimer->setSingleShot(true); // Only trigger once after the timeout
@@ -254,12 +258,40 @@ void MainWindow::onSliderTimeout() {
 void MainWindow::onMuscleButtonClick(){
 
   std::cout << "muscle\n";
+  colorFun->RemoveAllPoints();
+  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  colorFun->AddRGBPoint(-155, .55, .25, .15, 0.5, .92);
+  colorFun->AddRGBPoint(217, .88, .60, .29, 0.33, 0.45);
+  colorFun->AddRGBPoint(420, 1, .94, .95, 0.5, 0.0);
+  colorFun->AddRGBPoint(3071, .83, .66, 1, 0.5, 0.0);
+
+
+  opacityFun->RemoveAllPoints();
+  opacityFun->AddPoint(-3024, 0, 0.5, 0.0);
+  opacityFun->AddPoint(-155, 0, 0.5, 0.92);
+  opacityFun->AddPoint(217, .68, 0.33, 0.45);
+  opacityFun->AddPoint(420, .83, 0.5, 0.0);
+  opacityFun->AddPoint(3071, .80, 0.5, 0.0);
 
 }
 
 void MainWindow::onLungButtonClick(){
 
   std::cout << "Lung\n";
+  colorFun->RemoveAllPoints();
+  colorFun->AddRGBPoint(-1000, 0, 0, 0, 0.0, 0.0); // Air (black)
+  colorFun->AddRGBPoint(0, 0, 0, 0, 0.0, 0.0); // Air (black)
+  colorFun->AddRGBPoint(2, 0.8, 0.7, 0.5, 0.1, 0.6); // Lungs (light brown or yellowish)
+  colorFun->AddRGBPoint(5, 1.0, 0.8, 0.6, 0.2, 0.8); // Lungs (lighter brown)
+  colorFun->AddRGBPoint(300, 1.0, 1.0, 1.0, 0.7, 0.8);  // Bone (white)
+
+  opacityFun->RemoveAllPoints();
+  opacityFun->AddPoint(-1000, 0.0); // Air (transparent)
+  opacityFun->AddPoint(0, 0.0); // Air (transparent)
+  opacityFun->AddPoint(2, 0.1);  // Lungs, semi-transparent
+  opacityFun->AddPoint(5, 0.3);  // Lungs, slightly more opaque
+  opacityFun->AddPoint(300, 1.0);   // Bone, fully opaque
+
 
 }
 
@@ -268,10 +300,36 @@ void MainWindow::onBoneButtonClick(){
 
   std::cout << "Bone\n";
 
+  colorFun->RemoveAllPoints();
+  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
+  colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
+  colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
+
+  opacityFun->RemoveAllPoints();
+  opacityFun->AddPoint(-3024, 0, 0.5, 0.0);
+  opacityFun->AddPoint(-16, 0, .49, .61);
+  opacityFun->AddPoint(641, .72, .5, 0.0);
+  opacityFun->AddPoint(3071, .71, 0.5, 0.0);
+
+
+
 }
 
 void MainWindow::onSkinButtonClick(){
   std::cout << "skin \n";
+
+  colorFun->RemoveAllPoints();
+  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  colorFun->AddRGBPoint(-1000, .62, .36, .18, 0.5, 0.0);
+  colorFun->AddRGBPoint(-500, .88, .60, .29, 0.33, 0.45);
+  colorFun->AddRGBPoint(3071, .83, .66, 1, 0.5, 0.0);
+
+  opacityFun->RemoveAllPoints();
+  opacityFun->AddPoint(-3024, 0, 0.5, 0.0);
+  opacityFun->AddPoint(-1000, 0, 0.5, 0.0);
+  opacityFun->AddPoint(-500, 1.0, 0.33, 0.45);
+  opacityFun->AddPoint(3071, 1.0, 0.5, 0.0);
 }
 
 
