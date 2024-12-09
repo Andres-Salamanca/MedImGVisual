@@ -28,7 +28,8 @@ cmake ../source -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cm
     {
       "name": "vtk",
       "features": [
-        "opengl"
+        "opengl",
+        "qt"
       ]
     }
   ]
