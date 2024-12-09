@@ -22,6 +22,7 @@ public:
     ~MainWindow();
 
 private:
+    vtkNew<vtkRenderer> renderer;
     vtkNew<vtkImageViewer2> axialViewer;
     vtkNew<vtkImageViewer2> coronalViewer;
     vtkNew<vtkImageViewer2> sagittalViewer;

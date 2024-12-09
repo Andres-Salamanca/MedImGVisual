@@ -63,7 +63,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     vtkNew<vtkNamedColors> colors;
-    vtkNew<vtkRenderer> renderer;
 
     // renderer for views
     vtkNew<vtkRenderer> axialRenderer;
@@ -177,7 +176,6 @@ MainWindow::MainWindow(QWidget *parent)
     sagittalViewer->SetRenderer(sagittalRenderer);
     sagittalViewer->SetSliceOrientationToYZ();
     sagittalViewer->SetSlice(coronalViewer->GetSliceMin()+1); // Set to middle slice     //Set up viewports for the three renderers
-    std::cout << coronalViewer->GetSliceMax() << axialViewer->GetSliceMax() << sagittalViewer->GetSliceMax() << "\n";
 
     renderer->SetViewport(0.0, 0.0, 0.7, 1.0); 
     axialRenderer->SetViewport(0.7, 0.66, 1.0, 1.0);  // Axial view (top-right)
@@ -202,7 +200,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     debounceTimer = new QTimer(this);
     debounceTimer->setSingleShot(true); // Only trigger once after the timeout
-    debounceTimer->setInterval(100); // 100 ms delay before rendering
+    debounceTimer->setInterval(500); // 100 ms delay before rendering
 
 
     // initializa sliders
@@ -229,23 +227,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::onSliderValueChangedAxial(int value)
 {
-  std::cout << "valor horizontal" << value << "\n";
   axialViewer->SetSlice(value);
   debounceTimer->start();
 
 }
 void MainWindow::onSliderValueChangedCoronal(int value)
 {
-  std::cout << "valor horizontal" << value << "\n";
   coronalViewer->SetSlice(value);
   debounceTimer->start();
 
 }
 void MainWindow::onSliderValueChangedSagittal(int value)
 {
-  std::cout << "valor horizontal" << value << "\n";
   sagittalViewer->SetSlice(value);
-   coronalViewer->Render();
+  debounceTimer->start();
+
 }
 
 void MainWindow::onSliderTimeout() {
@@ -257,7 +253,6 @@ void MainWindow::onSliderTimeout() {
 
 void MainWindow::onMuscleButtonClick(){
 
-  std::cout << "muscle\n";
   colorFun->RemoveAllPoints();
   colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-155, .55, .25, .15, 0.5, .92);
@@ -272,12 +267,11 @@ void MainWindow::onMuscleButtonClick(){
   opacityFun->AddPoint(217, .68, 0.33, 0.45);
   opacityFun->AddPoint(420, .83, 0.5, 0.0);
   opacityFun->AddPoint(3071, .80, 0.5, 0.0);
-
+  renderer->Render();
 }
 
 void MainWindow::onLungButtonClick(){
 
-  std::cout << "Lung\n";
   colorFun->RemoveAllPoints();
   colorFun->AddRGBPoint(-1000, 0, 0, 0, 0.0, 0.0); // Air (black)
   colorFun->AddRGBPoint(0, 0, 0, 0, 0.0, 0.0); // Air (black)
@@ -291,14 +285,13 @@ void MainWindow::onLungButtonClick(){
   opacityFun->AddPoint(2, 0.1);  // Lungs, semi-transparent
   opacityFun->AddPoint(5, 0.3);  // Lungs, slightly more opaque
   opacityFun->AddPoint(300, 1.0);   // Bone, fully opaque
-
+  renderer->Render();
 
 }
 
 
 void MainWindow::onBoneButtonClick(){
 
-  std::cout << "Bone\n";
 
   colorFun->RemoveAllPoints();
   colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
@@ -311,13 +304,11 @@ void MainWindow::onBoneButtonClick(){
   opacityFun->AddPoint(-16, 0, .49, .61);
   opacityFun->AddPoint(641, .72, .5, 0.0);
   opacityFun->AddPoint(3071, .71, 0.5, 0.0);
-
-
+  renderer->Render();
 
 }
 
 void MainWindow::onSkinButtonClick(){
-  std::cout << "skin \n";
 
   colorFun->RemoveAllPoints();
   colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
@@ -330,6 +321,7 @@ void MainWindow::onSkinButtonClick(){
   opacityFun->AddPoint(-1000, 0, 0.5, 0.0);
   opacityFun->AddPoint(-500, 1.0, 0.33, 0.45);
   opacityFun->AddPoint(3071, 1.0, 0.5, 0.0);
+  renderer->Render();
 }
 
 
