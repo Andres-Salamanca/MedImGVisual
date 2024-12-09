@@ -26,16 +26,9 @@
 #include <QtWidgets/QApplication>
 #include "GUI/mainwindow.h"
 #include <QVTKOpenGLNativeWidget.h>
-
 int main (int argc, char *argv[]) {
 
-  MeIm::ArgParser parser;
-  auto options = parser.Parse(argc, argv);
 
-
-  auto readerFac = MeIm::ReaderFactory::CreateReader(options.fileType);
-
-  auto [input,reader] = readerFac->ReadData(options.fileName);
   
   QApplication app(argc,argv);
   MainWindow mainwindow;

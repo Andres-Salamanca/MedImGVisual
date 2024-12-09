@@ -34,3 +34,7 @@ cmake ../source -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cm
   ]
 }
 ```
+
+> problem with vcpkg and qt use '/vcpkg/installed/x64-windows/tools/Qt6/bin/windeployqt.exe ./{execuable}' for importing apropiate libraries
+> also is importante to compile in release because in debug mode it wont work
+
