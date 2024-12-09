@@ -30,6 +30,10 @@ private slots:
   void onSliderValueChangedAxial(int value);
   void onSliderValueChangedCoronal(int value);
   void onSliderValueChangedSagittal(int value);
+  void onMuscleButtonClick();
+  void onBoneButtonClick();
+  void onSkinButtonClick();
+  void onLungButtonClick();
   void onSliderTimeout();
 };
 

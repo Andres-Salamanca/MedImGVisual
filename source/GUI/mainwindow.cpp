@@ -1,8 +1,9 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 
 
 #include <QVTKInteractor.h>
+#include <qpushbutton.h>
 #include <vtkDICOMImageReader.h>
 #include <string>
 #include <utility>
@@ -36,7 +37,7 @@
 #include <QTimer>
 
 // toca quitar esta linea antes de compilar
-#include "../../build/RenderImage_autogen/include_Release/ui_mainwindow.h"
+#include "../../build2/RenderImage_autogen/include_Release/ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -50,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     double reductionFactor = 1.0;
     double frameRate = 10.0;
 
-    std::string dirPath = "C:\\Users\\Andres\\Desktop\\5.000000-SKINTOSKINSIM0.5MM10250\\5.000000-SKINTOSKINSIM0.5MM10250";
+    std::string dirPath = "C:\\Users\\adria\\Desktop\\itkprueba\\5.000000-SKINTOSKINSIM0.5MM10250";
     vtkNew<vtkDICOMImageReader> reader;
     reader->SetDirectoryName(dirPath.c_str());
     
@@ -73,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->openGLWidget->setRenderWindow(renderWindow);
 
 
-
+    //// COnseguir dimensiones para confirmar que es una imagen 3d
 
     // Verify that we actually have a volume
     int dim[3];
@@ -92,6 +93,9 @@ MainWindow::MainWindow(QWidget *parent)
       resample->SetAxisMagnificationFactor(1, reductionFactor);
       resample->SetAxisMagnificationFactor(2, reductionFactor);
     }
+
+
+  // usar volume raycast para que se muestre la iamgen en volumetric rendering
 
     // Create our volume and mapper
     vtkNew<vtkVolume> volume;
@@ -116,6 +120,10 @@ MainWindow::MainWindow(QWidget *parent)
     {
       input->GetSpacing(spacing);
     }
+
+
+
+  /// seleccionar solore y opacidad para diferenciar partes del cuerpo
     // Create our transfer function
     vtkNew<vtkColorTransferFunction> colorFun;
     vtkNew<vtkPiecewiseFunction> opacityFun;
@@ -149,6 +157,9 @@ MainWindow::MainWindow(QWidget *parent)
     property->SetScalarOpacityUnitDistance(0.8919);
 
 
+
+  // inicializar vistas anatomicas
+
     axialViewer->SetInputData(input);
     axialViewer->SetRenderWindow(renderWindow);
     axialViewer->SetRenderer(axialRenderer);
@@ -173,6 +184,9 @@ MainWindow::MainWindow(QWidget *parent)
     coronalRenderer->SetViewport(0.7, 0.33, 1.0, 0.66); // Coronal view (middle-right)
     sagittalRenderer->SetViewport(0.7, 0.0, 1.0, 0.33); // Sagittal view (bottom-right)
 
+
+
+  // renderizr todo
     renderer->AddVolume(volume);
     renderer->SetBackground(colors->GetColor3d("SlateGray").GetData());
     this->ui->openGLWidget->renderWindow()->AddRenderer(axialRenderer);
@@ -186,6 +200,9 @@ MainWindow::MainWindow(QWidget *parent)
     debounceTimer->setSingleShot(true); // Only trigger once after the timeout
     debounceTimer->setInterval(100); // 100 ms delay before rendering
 
+
+    // initializa sliders
+
     this->ui->horizontalSlider->setRange(axialViewer->GetSliceMin(), axialViewer->GetSliceMax());
     this->ui->horizontalSlider_2->setRange(coronalViewer->GetSliceMin(), coronalViewer->GetSliceMax());
     this->ui->horizontalSlider_3->setRange(sagittalViewer->GetSliceMin(), sagittalViewer->GetSliceMax());
@@ -193,7 +210,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->ui->horizontalSlider, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedAxial);
     connect(this->ui->horizontalSlider_2, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedCoronal);
     connect(this->ui->horizontalSlider_3, &QSlider::valueChanged, this, &MainWindow::onSliderValueChangedSagittal);
-
+    connect(this->ui->pushButton_4, &QPushButton::clicked , this , &MainWindow::onMuscleButtonClick);
+    connect(this->ui->pushButton_5, &QPushButton::clicked , this , &MainWindow::onLungButtonClick);
+    connect(this->ui->pushButton_2, &QPushButton::clicked , this , &MainWindow::onBoneButtonClick);
+    connect(this->ui->pushButton_3, &QPushButton::clicked , this , &MainWindow::onSkinButtonClick);
 
     
 }
@@ -230,3 +250,28 @@ void MainWindow::onSliderTimeout() {
     coronalViewer->Render();
     sagittalViewer->Render();
 }
+
+void MainWindow::onMuscleButtonClick(){
+
+  std::cout << "muscle\n";
+
+}
+
+void MainWindow::onLungButtonClick(){
+
+  std::cout << "Lung\n";
+
+}
+
+
+void MainWindow::onBoneButtonClick(){
+
+  std::cout << "Bone\n";
+
+}
+
+void MainWindow::onSkinButtonClick(){
+  std::cout << "skin \n";
+}
+
+
