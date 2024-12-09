@@ -2,6 +2,7 @@
 #include "IO/ReaderFactory.cpp"
 #include "utils/Enums.hpp"
 #include <iostream>
+#include <qapplication.h>
 #include <vtkCamera.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
@@ -22,8 +23,9 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkCellPicker.h>
 #include <vtkInteractorStyleImage.h>
-
-
+#include <QtWidgets/QApplication>
+#include "GUI/mainwindow.h"
+#include <QVTKOpenGLNativeWidget.h>
 
 int main (int argc, char *argv[]) {
 
@@ -34,11 +36,14 @@ int main (int argc, char *argv[]) {
   auto readerFac = MeIm::ReaderFactory::CreateReader(options.fileType);
 
   auto [input,reader] = readerFac->ReadData(options.fileName);
- 
-
+  
+  QApplication app(argc,argv);
+  MainWindow mainwindow;
+  mainwindow.show();
+  return app.exec();
 
   // Create the renderer, render window and interactor
-  vtkNew<vtkNamedColors> colors;
+  /*vtkNew<vtkNamedColors> colors;
   vtkNew<vtkRenderer> renderer;
 
   // renderer for views
@@ -308,9 +313,9 @@ int main (int argc, char *argv[]) {
   renderer->SetBackground(colors->GetColor3d("SlateGray").GetData());
 
   auto camera = renderer->GetActiveCamera();
-  /*axialRenderer->SetActiveCamera(camera);
+  axialRenderer->SetActiveCamera(camera);
   sagittalRenderer->SetActiveCamera(camera);
-  coronalRenderer->SetActiveCamera(camera);*/
+  coronalRenderer->SetActiveCamera(camera);
   camera->SetPosition(56.8656, -297.084, 78.913);
   camera->SetFocalPoint(109.139, 120.604, 63.5486);
   camera->SetViewUp(-0.00782421, -0.0357807, -0.999329);
@@ -320,7 +325,7 @@ int main (int argc, char *argv[]) {
   // interact with data
   renWin->Render();
 
-  iren->Start();
+  iren->Start();*/
 
   return EXIT_SUCCESS;
 
