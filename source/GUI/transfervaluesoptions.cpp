@@ -26,7 +26,8 @@ transferValuesOptions::~transferValuesOptions()
 void transferValuesOptions::onColortButtonClick(){
 
   QColor color = QColorDialog::getColor(Qt::white,this,"choose color",QColorDialog::ShowAlphaChannel);
-  std::cout << color.red() << " " << color.blue() << " " << color.green() << color.alpha() << "\n";
+  activeColor = color;
+  setButtonColor(color.red(),color.green(), color.blue() , color.alpha());
 }
 
 void transferValuesOptions::setButtonColor(int r,int g,int b,int a){
@@ -49,4 +50,10 @@ void transferValuesOptions::setNumber(int value){
   this->ui->spinBox->setValue(value);
 
 }
+QColor transferValuesOptions::getButtonColor() const {
+    return activeColor; // Replace with your actual member variable
+}
 
+int transferValuesOptions::getNumber() const {
+    return this->ui->spinBox->value(); // Replace with your actual member variable
+}

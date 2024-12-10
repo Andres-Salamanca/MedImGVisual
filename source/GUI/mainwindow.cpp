@@ -7,6 +7,7 @@
 #include <memory>
 #include <qlistwidget.h>
 #include <qpushbutton.h>
+#include <vector>
 #include <vtkDICOMImageReader.h>
 #include <string>
 #include <utility>
@@ -221,14 +222,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->ui->pushButton_5, &QPushButton::clicked , this , &MainWindow::onLungButtonClick);
     connect(this->ui->pushButton_2, &QPushButton::clicked , this , &MainWindow::onBoneButtonClick);
     connect(this->ui->pushButton_3, &QPushButton::clicked , this , &MainWindow::onSkinButtonClick);
+    connect(this->ui->pushButton_6, &QPushButton::clicked , this , &MainWindow::onNewTransferClick);
+    connect(this->ui->pushButton_7, &QPushButton::clicked , this , &MainWindow::onDeleteAllClick);
+    connect(this->ui->pushButton_8, &QPushButton::clicked , this , &MainWindow::onUpdateCLick);
 
 
-  auto item = new QListWidgetItem();
 
-  auto prueba1 = new transferValuesOptions(this);
-  item->setSizeHint(prueba1->sizeHint());
-  this->ui->listWidget->addItem(item);
-  this->ui->listWidget->setItemWidget(item, prueba1);
+    addTransfers(proper.Bone);
     
 }
 
@@ -389,13 +389,122 @@ void MainWindow::addTransfers(std::vector<VolumePrope> &trans){
     
     item->setSizeHint(widget->sizeHint());
     widget->setButtonColor(tra.colorOpt.r * 255, tra.colorOpt.g * 255, tra.colorOpt.b * 255 , tra.opaOpt.a * 255);
+    widget->activeColor = QColor(tra.colorOpt.r * 255, tra.colorOpt.g * 255, tra.colorOpt.b * 255, tra.opaOpt.a * 255);
     widget->setNumber(tra.value);
     this->ui->listWidget->addItem(item);
     this->ui->listWidget->setItemWidget(item, widget);
 
 
   }
+
+  iterateTransferList();
   
+
+}
+
+
+void MainWindow::iterateTransferList() {
+    int itemCount = this->ui->listWidget->count(); // Get the number of items in the list
+
+    for (int i = 0; i < itemCount; ++i) {
+        QListWidgetItem *item = this->ui->listWidget->item(i); // Get the item
+        transferValuesOptions *widget = 
+            dynamic_cast<transferValuesOptions*>(this->ui->listWidget->itemWidget(item)); // Get the associated widget
+
+        if (widget) {
+            // Access properties from the widget
+            QColor buttonColor = widget->getButtonColor(); // Assume you have a method for this
+            int number = widget->getNumber();             // Assume you have a method for this
+
+            // Example usage
+            qDebug() << "Item" << i << ":";
+            qDebug() << "Color:" << buttonColor.redF();
+            qDebug() << "Number:" << number;
+        }
+    }
+}
+
+void MainWindow::onNewTransferClick(){
+
+    auto item = new QListWidgetItem();
+
+    auto widget = new transferValuesOptions(this);
+    
+    item->setSizeHint(widget->sizeHint());
+    widget->setButtonColor( 255, 255, 255 , 255);
+    widget->activeColor = QColor( 255, 255, 255, 255);
+    widget->setNumber(0);
+    this->ui->listWidget->addItem(item);
+    this->ui->listWidget->setItemWidget(item, widget);
+
+
+}
+
+void MainWindow::onDeleteAllClick(){
+
+
+  this->ui->listWidget->clear();
+  colorFun->RemoveAllPoints();
+  opacityFun->RemoveAllPoints();
+  renderer->Render();
+}
+
+void MainWindow::onUpdateCLick(){
+  
+
+    std::vector<VolumePrope> UpdatesProperties;
+
+    int itemCount = this->ui->listWidget->count(); // Get the number of items in the list
+
+    for (int i = 0; i < itemCount; ++i) {
+        QListWidgetItem *item = this->ui->listWidget->item(i); // Get the item
+        transferValuesOptions *widget = 
+            dynamic_cast<transferValuesOptions*>(this->ui->listWidget->itemWidget(item)); // Get the associated widget
+
+        if (widget) {
+            // Access properties from the widget
+            QColor buttonColor = widget->getButtonColor(); // Assume you have a method for this
+            int number = widget->getNumber();             // Assume you have a method for this
+
+
+
+
+
+            VolumePrope point;
+            point.value = number;
+            point.colorOpt = {buttonColor.redF() , buttonColor.greenF() ,buttonColor.blueF()};
+            point.opaOpt = {buttonColor.alphaF()};
+            
+            UpdatesProperties.push_back(point);
+        }
+    }
+
+    if(!UpdatesProperties.empty()){
+
+    updatePropertiesTransfers(UpdatesProperties);
+
+
+  }
+
+}
+
+
+ void MainWindow::updatePropertiesTransfers(std::vector<VolumePrope> &trans){
+
+  
+  colorFun->RemoveAllPoints();
+  opacityFun->RemoveAllPoints();
+  for(auto const &po : trans){
+
+
+    colorFun->AddRGBPoint(po.value,po.colorOpt.r , po.colorOpt.g , po.colorOpt.b , po.colorOpt.midpoint , po.colorOpt.sharp);
+    opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
+
+  }
+  addTransfers(trans);
+
+  renderer->Render();
+
 
 }
 

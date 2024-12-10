@@ -34,6 +34,8 @@ private:
     inilizeProperties proper;
     Ui::MainWindow *ui;
     void addTransfers(std::vector<VolumePrope> &trans);
+    void iterateTransferList();
+    void updatePropertiesTransfers(std::vector<VolumePrope> &trans);
 
 private slots:
   void onSliderValueChangedAxial(int value);
@@ -44,6 +46,9 @@ private slots:
   void onSkinButtonClick();
   void onLungButtonClick();
   void onSliderTimeout();
+  void onNewTransferClick();
+  void onDeleteAllClick();
+  void onUpdateCLick();
 };
 
 #endif // MAINWINDOW_H

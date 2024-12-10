@@ -17,7 +17,9 @@ public:
     ~transferValuesOptions();
     void setButtonColor(int r,int g,int b,int a=255);
     void setNumber(int value);
-
+    QColor getButtonColor() const;
+    int getNumber() const;
+    QColor activeColor;
 private:
     Ui::transferValuesOptions *ui;
 private slots:
