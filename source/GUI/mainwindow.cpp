@@ -276,6 +276,8 @@ void MainWindow::onMuscleButtonClick(){
     opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
 
   }
+
+  addTransfers(proper.Muscle);
   /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-155, .55, .25, .15, 0.5, .92);
   colorFun->AddRGBPoint(217, .88, .60, .29, 0.33, 0.45);
@@ -303,7 +305,7 @@ void MainWindow::onLungButtonClick(){
     opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
 
   }
-
+  addTransfers(proper.Lung);
   /*colorFun->AddRGBPoint(-1000, 0, 0, 0, 0.0, 0.0); // Air (black)
   colorFun->AddRGBPoint(0, 0, 0, 0, 0.0, 0.0); // Air (black)
   colorFun->AddRGBPoint(2, 0.8, 0.7, 0.5, 0.1, 0.6); // Lungs (light brown or yellowish)
@@ -333,6 +335,8 @@ void MainWindow::onBoneButtonClick(){
     opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
 
   }
+
+  addTransfers(proper.Bone);
   /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
   colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
@@ -358,6 +362,7 @@ void MainWindow::onSkinButtonClick(){
     opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
 
   }
+  addTransfers(proper.Skin);
   /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-1000, .62, .36, .18, 0.5, 0.0);
   colorFun->AddRGBPoint(-500, .88, .60, .29, 0.33, 0.45);
@@ -371,4 +376,26 @@ void MainWindow::onSkinButtonClick(){
   renderer->Render();
 }
 
+
+void MainWindow::addTransfers(std::vector<VolumePrope> &trans){
+
+  this->ui->listWidget->clear();
+
+  for(auto const &tra : trans){
+
+    auto item = new QListWidgetItem();
+
+    auto widget = new transferValuesOptions(this);
+    
+    item->setSizeHint(widget->sizeHint());
+    widget->setButtonColor(tra.colorOpt.r * 255, tra.colorOpt.g * 255, tra.colorOpt.b * 255 , tra.opaOpt.a * 255);
+    widget->setNumber(tra.value);
+    this->ui->listWidget->addItem(item);
+    this->ui->listWidget->setItemWidget(item, widget);
+
+
+  }
+  
+
+}
 

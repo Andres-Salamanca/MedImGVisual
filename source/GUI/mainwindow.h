@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <qtmetamacros.h>
+#include <vector>
 #include <vtkImageViewer2.h>
 #include <vtkSmartPointer.h>
 #include <vtkRenderer.h>
@@ -32,6 +33,7 @@ private:
     QTimer *debounceTimer;
     inilizeProperties proper;
     Ui::MainWindow *ui;
+    void addTransfers(std::vector<VolumePrope> &trans);
 
 private slots:
   void onSliderValueChangedAxial(int value);

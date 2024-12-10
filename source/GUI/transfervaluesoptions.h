@@ -2,6 +2,7 @@
 #define TRANSFERVALUESOPTIONS_H
 
 #include <QWidget>
+#include <qobject.h>
 #include <qtmetamacros.h>
 namespace Ui {
 class transferValuesOptions;

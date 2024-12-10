@@ -12,6 +12,9 @@ transferValuesOptions::transferValuesOptions(QWidget *parent)
 {
     ui->setupUi(this);
 
+    this->ui->spinBox->setMinimum(-10000);
+    this->ui->spinBox->setMaximum(10000);
+
     connect(this->ui->pushButton , &QPushButton::clicked , this , &transferValuesOptions::onColortButtonClick);
 }
 
@@ -29,7 +32,7 @@ void transferValuesOptions::onColortButtonClick(){
 void transferValuesOptions::setButtonColor(int r,int g,int b,int a){
 
 
-  QString style = QString("border: none; background-color: rgba(%1, %2, %3,%3);")
+  QString style = QString("border: none; background-color: rgba(%1, %2, %3,%4);")
                         .arg(r)
                         .arg(g)
                         .arg(b)
@@ -46,3 +49,4 @@ void transferValuesOptions::setNumber(int value){
   this->ui->spinBox->setValue(value);
 
 }
+
