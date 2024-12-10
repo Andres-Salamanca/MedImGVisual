@@ -8,6 +8,7 @@ MedImGVisual is a visualization tool for exploring MRI, CT, and digitized pathol
 
 The tool has been tested with datasets from **[The Cancer Imaging Archive (TCIA)](https://www.cancerimagingarchive.net/)**.  
 
+![MedImGVisual Tool in Action](Images/MedImGVisual.gif)  
 ### Key Features  
 1. **3D Visualization**:  
    - Render volumetric images in 3D with real-time interaction.  
@@ -26,7 +27,7 @@ The tool has been tested with datasets from **[The Cancer Imaging Archive (TCIA)
   - **QT** for GUI development.
 - **Rendering**: Uses VTK built with Qt integration to manage different OpenGL views seamlessly.  
 
-![MedImGVisual Tool in Action](Images/MedImGVisual.gif)  
+
 ---
 
 ## How to Build
