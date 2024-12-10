@@ -416,10 +416,10 @@ void MainWindow::iterateTransferList() {
             QColor buttonColor = widget->getButtonColor(); // Assume you have a method for this
             int number = widget->getNumber();             // Assume you have a method for this
 
-            // Example usage
-            qDebug() << "Item" << i << ":";
+            
+            /*qDebug() << "Item" << i << ":";
             qDebug() << "Color:" << buttonColor.redF();
-            qDebug() << "Number:" << number;
+            qDebug() << "Number:" << number;*/
         }
     }
 }
