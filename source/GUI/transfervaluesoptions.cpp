@@ -5,7 +5,7 @@
 #include <qcolor.h>
 #include <qnamespace.h>
 
-#include "../../build/RenderImage_autogen/include_Release/ui_transfervaluesoptions.h"
+//#include "../../build/RenderImage_autogen/include_Release/ui_transfervaluesoptions.h"
 transferValuesOptions::transferValuesOptions(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::transferValuesOptions)

@@ -43,7 +43,7 @@
 #include "transfervaluesoptions.h"
 
 // toca quitar esta linea antes de compilar
-#include "../../build/RenderImage_autogen/include_Release/ui_mainwindow.h"
+//#include "../../build/RenderImage_autogen/include_Release/ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     double reductionFactor = 1.0;
     double frameRate = 10.0;
 
-    std::string dirPath = "C:\\Users\\Andres\\Desktop\\5.000000-SKINTOSKINSIM0.5MM10250\\5.000000-SKINTOSKINSIM0.5MM10250";
+    std::string dirPath = "DICOM folder";
     vtkNew<vtkDICOMImageReader> reader;
     reader->SetDirectoryName(dirPath.c_str());
     
