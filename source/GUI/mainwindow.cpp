@@ -1,8 +1,11 @@
 #include "mainwindow.h"
-//#include "ui_mainwindow.h"
+#include "ui_mainwindow.h"
 
 
 #include <QVTKInteractor.h>
+#include <iostream>
+#include <memory>
+#include <qlistwidget.h>
 #include <qpushbutton.h>
 #include <vtkDICOMImageReader.h>
 #include <string>
@@ -36,8 +39,10 @@
 #include <vtkViewport.h>
 #include <QTimer>
 
+#include "transfervaluesoptions.h"
+
 // toca quitar esta linea antes de compilar
-#include "../../build2/RenderImage_autogen/include_Release/ui_mainwindow.h"
+#include "../../build/RenderImage_autogen/include_Release/ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -51,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     double reductionFactor = 1.0;
     double frameRate = 10.0;
 
-    std::string dirPath = "C:\\Users\\adria\\Desktop\\itkprueba\\5.000000-SKINTOSKINSIM0.5MM10250";
+    std::string dirPath = "C:\\Users\\Andres\\Desktop\\5.000000-SKINTOSKINSIM0.5MM10250\\5.000000-SKINTOSKINSIM0.5MM10250";
     vtkNew<vtkDICOMImageReader> reader;
     reader->SetDirectoryName(dirPath.c_str());
     
@@ -217,6 +222,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->ui->pushButton_2, &QPushButton::clicked , this , &MainWindow::onBoneButtonClick);
     connect(this->ui->pushButton_3, &QPushButton::clicked , this , &MainWindow::onSkinButtonClick);
 
+
+  auto item = new QListWidgetItem();
+
+  auto prueba1 = new transferValuesOptions(this);
+  item->setSizeHint(prueba1->sizeHint());
+  this->ui->listWidget->addItem(item);
+  this->ui->listWidget->setItemWidget(item, prueba1);
     
 }
 
@@ -253,8 +265,18 @@ void MainWindow::onSliderTimeout() {
 
 void MainWindow::onMuscleButtonClick(){
 
+
+
   colorFun->RemoveAllPoints();
-  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  opacityFun->RemoveAllPoints();
+  for(auto const &po : proper.Muscle){
+
+
+    colorFun->AddRGBPoint(po.value,po.colorOpt.r , po.colorOpt.g , po.colorOpt.b , po.colorOpt.midpoint , po.colorOpt.sharp);
+    opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
+
+  }
+  /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-155, .55, .25, .15, 0.5, .92);
   colorFun->AddRGBPoint(217, .88, .60, .29, 0.33, 0.45);
   colorFun->AddRGBPoint(420, 1, .94, .95, 0.5, 0.0);
@@ -266,14 +288,23 @@ void MainWindow::onMuscleButtonClick(){
   opacityFun->AddPoint(-155, 0, 0.5, 0.92);
   opacityFun->AddPoint(217, .68, 0.33, 0.45);
   opacityFun->AddPoint(420, .83, 0.5, 0.0);
-  opacityFun->AddPoint(3071, .80, 0.5, 0.0);
+  opacityFun->AddPoint(3071, .80, 0.5, 0.0);*/
   renderer->Render();
 }
 
 void MainWindow::onLungButtonClick(){
 
   colorFun->RemoveAllPoints();
-  colorFun->AddRGBPoint(-1000, 0, 0, 0, 0.0, 0.0); // Air (black)
+  opacityFun->RemoveAllPoints();
+  for(auto const &po : proper.Lung){
+
+
+    colorFun->AddRGBPoint(po.value,po.colorOpt.r , po.colorOpt.g , po.colorOpt.b , po.colorOpt.midpoint , po.colorOpt.sharp);
+    opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
+
+  }
+
+  /*colorFun->AddRGBPoint(-1000, 0, 0, 0, 0.0, 0.0); // Air (black)
   colorFun->AddRGBPoint(0, 0, 0, 0, 0.0, 0.0); // Air (black)
   colorFun->AddRGBPoint(2, 0.8, 0.7, 0.5, 0.1, 0.6); // Lungs (light brown or yellowish)
   colorFun->AddRGBPoint(5, 1.0, 0.8, 0.6, 0.2, 0.8); // Lungs (lighter brown)
@@ -284,7 +315,7 @@ void MainWindow::onLungButtonClick(){
   opacityFun->AddPoint(0, 0.0); // Air (transparent)
   opacityFun->AddPoint(2, 0.1);  // Lungs, semi-transparent
   opacityFun->AddPoint(5, 0.3);  // Lungs, slightly more opaque
-  opacityFun->AddPoint(300, 1.0);   // Bone, fully opaque
+  opacityFun->AddPoint(300, 1.0);   // Bone, fully opaque*/
   renderer->Render();
 
 }
@@ -294,7 +325,15 @@ void MainWindow::onBoneButtonClick(){
 
 
   colorFun->RemoveAllPoints();
-  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  opacityFun->RemoveAllPoints();
+  for(auto const &po : proper.Bone){
+
+
+    colorFun->AddRGBPoint(po.value,po.colorOpt.r , po.colorOpt.g , po.colorOpt.b , po.colorOpt.midpoint , po.colorOpt.sharp);
+    opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
+
+  }
+  /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
   colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
   colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
@@ -303,7 +342,7 @@ void MainWindow::onBoneButtonClick(){
   opacityFun->AddPoint(-3024, 0, 0.5, 0.0);
   opacityFun->AddPoint(-16, 0, .49, .61);
   opacityFun->AddPoint(641, .72, .5, 0.0);
-  opacityFun->AddPoint(3071, .71, 0.5, 0.0);
+  opacityFun->AddPoint(3071, .71, 0.5, 0.0);*/
   renderer->Render();
 
 }
@@ -311,7 +350,15 @@ void MainWindow::onBoneButtonClick(){
 void MainWindow::onSkinButtonClick(){
 
   colorFun->RemoveAllPoints();
-  colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+  opacityFun->RemoveAllPoints();
+  for(auto const &po : proper.Skin){
+
+
+    colorFun->AddRGBPoint(po.value,po.colorOpt.r , po.colorOpt.g , po.colorOpt.b , po.colorOpt.midpoint , po.colorOpt.sharp);
+    opacityFun->AddPoint(po.value , po.opaOpt.a , po.opaOpt.midpoint , po.opaOpt.sharp);
+
+  }
+  /*colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
   colorFun->AddRGBPoint(-1000, .62, .36, .18, 0.5, 0.0);
   colorFun->AddRGBPoint(-500, .88, .60, .29, 0.33, 0.45);
   colorFun->AddRGBPoint(3071, .83, .66, 1, 0.5, 0.0);
@@ -320,7 +367,7 @@ void MainWindow::onSkinButtonClick(){
   opacityFun->AddPoint(-3024, 0, 0.5, 0.0);
   opacityFun->AddPoint(-1000, 0, 0.5, 0.0);
   opacityFun->AddPoint(-500, 1.0, 0.33, 0.45);
-  opacityFun->AddPoint(3071, 1.0, 0.5, 0.0);
+  opacityFun->AddPoint(3071, 1.0, 0.5, 0.0);*/
   renderer->Render();
 }
 

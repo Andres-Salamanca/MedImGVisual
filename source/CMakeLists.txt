@@ -59,6 +59,8 @@ file(GLOB_RECURSE SOURCES
     "${Gui_DIR}/*.h"
     "${Gui_DIR}/*.cpp"
     "${CMAKE_SOURCE_DIR}/GUI/mainwindow.cpp"  # Ensure mainwindow.cpp is included
+    "${CMAKE_SOURCE_DIR}/GUI/transfervaluesoptions.cpp"  # Ensure mainwindow.cpp is included
+    "${CMAKE_SOURCE_DIR}/utils/ColorPiseVal.cpp"
 )
 
 

@@ -8,6 +8,7 @@
 #include <vtkRenderer.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkPiecewiseFunction.h>
+#include "../utils/ColorPiseVal.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +30,7 @@ private:
     vtkNew<vtkColorTransferFunction> colorFun;
     vtkNew<vtkPiecewiseFunction> opacityFun;
     QTimer *debounceTimer;
+    inilizeProperties proper;
     Ui::MainWindow *ui;
 
 private slots:

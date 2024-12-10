@@ -30,7 +30,7 @@
       <x>0</x>
       <y>10</y>
       <width>160</width>
-      <height>190</height>
+      <height>265</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -116,6 +116,9 @@
           <enum>Qt::Orientation::Horizontal</enum>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="listWidget"/>
        </item>
       </layout>
      </item>
